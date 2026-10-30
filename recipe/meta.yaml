@@ -1,0 +1,59 @@
+{% set name = "docling-ibm-models" %}
+{% set version = "4.0.4" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/docling_ibm_models-{{ version }}.tar.gz
+  sha256: f10cbcd2986ab3f55ac87890bda04353c10d312074433f1c8885cc33b33c3c13
+
+build:
+  number: 0
+  # osx-64 is outside the supported Anaconda build scope.
+  skip: true  # [py<310 or py>=400 or (osx and x86_64)]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    # Upstream omits build-system, so pip defaults to setuptools.build_meta.
+    - setuptools >=40.8.0
+    - pip
+  run:
+    - python
+    - pytorch >=2.2.2,<3.0.0  # analint: cbc_dep_in_run_missing_from_host  # pure Python; pytorch is runtime-only
+    - torchvision >=0,<1
+    - pillow >=10.0.0,<14.0.0
+    - huggingface_hub >=0.23,<2
+    - safetensors >=0.4.3,<1
+    - transformers >=4.42.0,<6.0.0
+    - numpy >=1.24.4,<3.0.0
+  run_constrained:
+    # Both OpenCV extras map to conda's opencv; dev dependencies are omitted.
+    - opencv >=4.6.0.66,<5.0.0.0
+
+test:
+  imports:
+    - docling_ibm_models
+    - docling_ibm_models.tableformer.common
+    - docling_ibm_models.tableformer_v2
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/docling-project/docling-ibm-models
+  summary: This package contains the AI models used by the Docling PDF conversion package
+  description: AI model implementations supporting the Docling PDF document conversion pipeline.
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  doc_url: https://github.com/docling-project/docling-ibm-models/blob/main/README.md
+  dev_url: https://github.com/docling-project/docling-ibm-models
+
+extra:
+  recipe-maintainers:
+    - hadim
