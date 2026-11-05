@@ -11,8 +11,6 @@ source:
 
 build:
   number: 0
-  # osx-64 is outside the supported Anaconda build scope.
-  skip: true  # [py<310 or py>=400 or (osx and x86_64)]
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
@@ -31,7 +29,6 @@ requirements:
     - transformers >=4.42.0,<6.0.0
     - numpy >=1.24.4,<3.0.0
   run_constrained:
-    # Both OpenCV extras map to conda's opencv; dev dependencies are omitted.
     - opencv >=4.6.0.66,<5.0.0.0
 
 test:
